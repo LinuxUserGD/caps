@@ -71,17 +71,53 @@ inline float v4f_sum (v4f_t v)
 	return f[0]+f[1]+f[2]+f[3];
 }
 
-/* mapping a float to float function [e.g. sinf() e.a.] to a vector */
-typedef float (*f2f_fn) (float f);
-
-template <f2f_fn fn>
-v4f_t v4f_map (v4f_t x)
+inline v4f_t v4f_map_builtin_sinf (v4f_t x)
 {
 	v4f_t y;
 	float * s = (float *) &x;
 	float * d = (float *) &y;
 	for (uint i = 0; i < 4; ++i)
-		d[i] = fn(s[i]);
+		d[i] = __builtin_sinf(s[i]);
+	return y;
+}
+
+inline v4f_t v4f_map_builtin_cosf (v4f_t x)
+{
+	v4f_t y;
+	float * s = (float *) &x;
+	float * d = (float *) &y;
+	for (uint i = 0; i < 4; ++i)
+		d[i] = __builtin_cosf(s[i]);
+	return y;
+}
+
+inline v4f_t v4f_map_exp10f (v4f_t x)
+{
+	v4f_t y;
+	float * s = (float *) &x;
+	float * d = (float *) &y;
+	for (uint i = 0; i < 4; ++i)
+		d[i] = exp10f(s[i]);
+	return y;
+}
+
+inline v4f_t v4f_map_sqrtf (v4f_t x)
+{
+	v4f_t y;
+	float * s = (float *) &x;
+	float * d = (float *) &y;
+	for (uint i = 0; i < 4; ++i)
+		d[i] = sqrtf(s[i]);
+	return y;
+}
+
+inline v4f_t v4f_map_cosf (v4f_t x)
+{
+	v4f_t y;
+	float * s = (float *) &x;
+	float * d = (float *) &y;
+	for (uint i = 0; i < 4; ++i)
+		d[i] = cosf(s[i]);
 	return y;
 }
 
@@ -155,10 +191,10 @@ class Sin4f
 			{
 				v4f_t *y = data();
 				v4f_t w = -v4f_pi * f;
-				y[0] = v4f_map<__builtin_sinf> (w);
-				y[1] = v4f_map<__builtin_sinf> (v4f_2 * w);
+				y[0] = v4f_map_builtin_sinf (w);
+				y[1] = v4f_map_builtin_sinf (v4f_2 * w);
 				/* b in above scalar implementation is y[2] in the flat data */
-				y[2] = v4f_2 * v4f_map<__builtin_cosf> (w); /* b */
+				y[2] = v4f_2 * v4f_map_builtin_cosf (w); /* b */
 				z = 0;
 			}
 

@@ -45,8 +45,8 @@ class RBJv4
 			{
 				v4f_t w = v4f_2pi * f;
 
-				sin = v4f_map<__builtin_sinf> (w);
-				cos = v4f_map<__builtin_cosf> (w);
+				sin = v4f_map_builtin_sinf (w);
+				cos = v4f_map_builtin_cosf (w);
 
 				alpha = sin / (v4f_2 * Q);
 			}
@@ -142,7 +142,7 @@ class IIR2v4
 				/* A = pow (10, gain / 40) */
 				v4f_t A = (v4f_t) {.025,.025,.025,.025};
 				A *= gain;
-				A = v4f_map<exp10f> (A);
+				A = v4f_map_exp10f (A);
 
 				RBJv4 p (f, Q);
 
@@ -429,7 +429,7 @@ class IIR2v4Bank
 					/* A = pow (10, gain / 40) */
 					v4f_t A = (v4f_t) {.025,.025,.025,.025};
 					A *= gain[i];
-					A = v4f_map<exp10f> (A);
+					A = v4f_map_exp10f (A);
 
 					RBJv4 p (f[i], Q[i]);
 
@@ -549,9 +549,9 @@ class Resonator4fBank
 			{
 				v4f_t * a = state + i*Item;
 				f *= v4f_2pi;
-				a[0] = v4f_map<__builtin_sinf> (f);
+				a[0] = v4f_map_builtin_sinf (f);
 				a[0] *= gain;
-				a[5] = v4f_map<__builtin_cosf> (f);
+				a[5] = v4f_map_builtin_cosf (f);
 				set_r (i, r);
 			}
 		void set_r (int i, v4f_t r)
@@ -676,9 +676,9 @@ class MREqv4
 			{
 				v4f_t *a = data(), *s = a + 1;
 
-				s[0] = -v4f_map<cosf>(v4f_2pi*f);
+				s[0] = -v4f_map_cosf(v4f_2pi*f);
         a[0] = v4f_half*(gain - v4f_1);
-				bw *= v4f(7,7,7,7)*f / v4f_map<sqrtf>(gain);
+				bw *= v4f(7,7,7,7)*f / v4f_map_sqrtf(gain);
 				s[1] = (v4f_1 - bw) / (v4f_1 + bw);
 			}
 
